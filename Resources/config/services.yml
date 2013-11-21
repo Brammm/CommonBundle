@@ -1,0 +1,4 @@
+services:
+    brammm_common.controller.base:
+        abstract: true
+        arguments: [@doctrine.orm.entity_manager, @security.context, @session]
