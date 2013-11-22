@@ -21,5 +21,12 @@
                 <argument type="service" id="event_dispatcher" />
             </call>
         </service>
+
+        <service id="brammm_common.view_listener"
+                class="Brammm\CommonBundle\EventListener\ViewListener">
+            <argument type="service" id="templating" />
+            <tag name="kernel.event_listener" event="kernel.view" method="onControllerResponse" />
+        </service>
+
     </services>
 </container>
