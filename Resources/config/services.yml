@@ -1,9 +1,0 @@
-services:
-    brammm_common.controller.base:
-        abstract: true
-        calls:
-            - [setEntityManager, [@doctrine.orm.entity_manager]]
-            - [setSecurity, [@security.context]]
-            - [setSession, [@session]]
-            - [setFormFactory, [@form.factory]]
-            - [setEventDispatcher, [@event_dispatcher]]
