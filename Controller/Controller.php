@@ -27,9 +27,10 @@ abstract class Controller
     /**
      * Creates a form
      *
-     * @param       $type
-     * @param null  $data
-     * @param array $options
+     * @param         $type
+     * @param null    $data
+     * @param Request $request
+     * @param array   $options
      *
      * @return \Symfony\Component\Form\Form|\Symfony\Component\Form\FormInterface
      */
@@ -78,14 +79,16 @@ abstract class Controller
     /**
      * @param FormFactory $formFactory
      */
-    public function setFormFactory(FormFactory $formFactory) {
+    public function setFormFactory(FormFactory $formFactory)
+    {
         $this->formFactory = $formFactory;
     }
 
     /**
      * @param EventDispatcherInterface $eventDispatcher
      */
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher) {
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
         $this->eventDispatcher = $eventDispatcher;
     }
 } 
