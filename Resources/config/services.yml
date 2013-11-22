@@ -6,3 +6,4 @@ services:
             - [setSecurity, [@security.context]]
             - [setSession, [@session]]
             - [setFormFactory, [@form.factory]]
+            - [setEventDispatcher, [@event_dispatcher]]
