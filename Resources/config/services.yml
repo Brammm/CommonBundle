@@ -1,4 +1,8 @@
 services:
     brammm_common.controller.base:
         abstract: true
-        arguments: [@doctrine.orm.entity_manager, @security.context, @session]
+        calls:
+            - [setEntityManager, [@doctrine.orm.entity_manager]]
+            - [setSecurity, [@security.context]]
+            - [setSession, [@session]]
+            - [setFormFactory, [@form.factory]]
