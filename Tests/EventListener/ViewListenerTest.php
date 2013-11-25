@@ -10,7 +10,7 @@ class ViewListenerTest extends \PHPUnit_Framework_TestCase
     /** @var ViewListener */
     private $listener;
 
-    public function setUp()
+    protected function setUp()
     {
         $templating = $this->getMockBuilder('\Symfony\Bundle\TwigBundle\TwigEngine')
             ->disableOriginalConstructor()
