@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
         <service id="brammm_common.controller.base" abstract="true">
             <call method="setEntityManager">
                 <argument type="service" id="doctrine.orm.entity_manager" />
@@ -22,8 +23,7 @@
             </call>
         </service>
 
-        <service id="brammm_common.view_listener"
-                class="Brammm\CommonBundle\EventListener\ViewListener">
+        <service id="brammm_common.view_listener" class="Brammm\CommonBundle\EventListener\ViewListener">
             <argument type="service" id="templating" />
             <tag name="kernel.event_listener" event="kernel.view" method="onControllerResponse" />
         </service>
