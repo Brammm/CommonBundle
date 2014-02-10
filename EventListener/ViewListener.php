@@ -41,12 +41,21 @@ class ViewListener {
      */
     protected function getTemplate($controllerPath)
     {
+        // Gets an array that looks like
+//        [
+//            1 => 'acme_demo',
+//            2 => 'foo',
+//            3 => 'bar'
+//        ]
         if(preg_match('/^(.+)\.controller\.(.+):(.+)Action$/', $controllerPath, $matches)) {
-            $bundle = preg_replace('/(?:^|_)(.?)/e',"strtoupper('$1')", $matches[1]) . 'Bundle';
-            $controller = ucfirst($matches[2]);
-            $action = $matches[3];
-
-            return $bundle . ':' . $controller . ':' . $action . '.html.twig';
+            $bundle = preg_replace_callback(
+                '/(^|_)([a-z])/',
+                function($m) {
+                    return strtoupper($m[2]);
+                },
+                $matches[1]
+            );
+            return $bundle . 'Bundle:' . ucfirst($matches[2]) . ':' . $matches[3] . '.html.twig';
         } else {
             throw new \InvalidArgumentException(sprintf('The controller "%s" does not match the pattern "acme_demo.controller.foo:barAction"', $controllerPath));
         }
