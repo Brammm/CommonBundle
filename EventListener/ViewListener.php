@@ -32,7 +32,7 @@ class ViewListener {
 
     /**
      * Converts a string that matches to pattern "acme_demo.controller.foo:barAction"
-     * to "AcmeDemoBundle:Foo:bar.html.twig"
+     * to ":Demo:Foo/bar.html.twig"
      *
      * @param string $controllerPath
      *
@@ -42,20 +42,18 @@ class ViewListener {
     protected function getTemplate($controllerPath)
     {
         // Gets an array that looks like
-//        [
-//            1 => 'acme_demo',
-//            2 => 'foo',
-//            3 => 'bar'
-//        ]
+        // [
+        //     1 => 'acme_demo',
+        //     2 => 'foo',
+        //     3 => 'bar'
+        // ]
         if(preg_match('/^(.+)\.controller\.(.+):(.+)Action$/', $controllerPath, $matches)) {
-            $bundle = preg_replace_callback(
-                '/(^|_)([a-z])/',
-                function($m) {
-                    return strtoupper($m[2]);
-                },
-                $matches[1]
-            );
-            return $bundle . 'Bundle:' . ucfirst($matches[2]) . ':' . $matches[3] . '.html.twig';
+            return ':'
+                . ucfirst(preg_replace('/^[a-z]+_/', '', $matches[1])) // Strip out the vendor
+                . ':'
+                . ucfirst($matches[2])
+                . '/' . $matches[3]
+                . '.html.twig';
         } else {
             throw new \InvalidArgumentException(sprintf('The controller "%s" does not match the pattern "acme_demo.controller.foo:barAction"', $controllerPath));
         }

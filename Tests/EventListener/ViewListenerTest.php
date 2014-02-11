@@ -18,7 +18,7 @@ class ViewListenerTest extends \PHPUnit_Framework_TestCase
 
         $templating->expects($this->once())
             ->method('renderResponse')
-            ->with($this->equalTo('AcmeDemoBundle:Foo:bar.html.twig'), $this->equalTo(['foo' => 'bar']))
+            ->with($this->equalTo(':Demo:Foo/bar.html.twig'), $this->equalTo(['foo' => 'bar']))
             ->will($this->returnValue(new Response()));
 
         $listener = new ViewListener($templating);
