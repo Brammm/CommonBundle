@@ -3,6 +3,7 @@
 namespace Brammm\CommonBundle\EventListener;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 class ViewListener
@@ -29,8 +30,28 @@ class ViewListener
      */
     public function onControllerResponse(GetResponseForControllerResultEvent $event)
     {
-        $template = $this->getTemplate($event->getRequest()->attributes->get('_controller'));
-        $response = $this->templating->renderResponse($template, $event->getControllerResult());
+        $controller = $event->getRequest()->attributes->get('_controller');
+
+        $responseType = $this->defaultResponse;
+        foreach ($this->responses as $key => $type) {
+            if (preg_match(sprintf('/%s/', $key), $controller)) {
+                $responseType = $type;
+                break;
+            }
+        }
+
+        switch ($responseType) {
+            case 'json':
+                    $response = new JsonResponse($event->getControllerResult());
+                break;
+            case 'template':
+                    $template = $this->getTemplate($event->getRequest()->attributes->get('_controller'));
+                    $response = $this->templating->renderResponse($template, $event->getControllerResult());
+                break;
+            default:
+                throw new \LogicException(sprintf('Response type "%s" not supported', $responseType));
+        }
+
 
         $event->setResponse($response);
     }
