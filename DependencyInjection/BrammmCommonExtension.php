@@ -17,8 +17,10 @@ class BrammmCommonExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setAlias('brammm_common.templateguesser', $config['response']['guesser']);
+
         $container->setParameter('brammm_common.response.default', $config['response']['default']);
-        $container->setParameter('brammm_common.response.responses', $config['response']['responses']);
+        $container->setParameter('brammm_common.response.types', $config['response']['types']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
