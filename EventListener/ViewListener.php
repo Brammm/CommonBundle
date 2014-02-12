@@ -9,7 +9,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 class ViewListener
 {
-
     /** @var string */
     private $defaultResponse;
     /** @var EngineInterface */
@@ -45,11 +44,11 @@ class ViewListener
 
         switch ($responseType) {
             case 'json':
-                    $response = new JsonResponse($event->getControllerResult());
+                $response = new JsonResponse($event->getControllerResult());
                 break;
             case 'template':
-                    $template = $this->getTemplate($event->getRequest()->attributes->get('_controller'));
-                    $response = $this->templating->renderResponse($template, $event->getControllerResult());
+                $template = $this->getTemplate($controller);
+                $response = $this->templating->renderResponse($template, $event->getControllerResult());
                 break;
             default:
                 throw new UnsupportedTypeException(sprintf('Response type "%s" not supported', $responseType));
