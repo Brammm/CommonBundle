@@ -2,6 +2,7 @@
 
 namespace Brammm\CommonBundle\EventListener;
 
+use Brammm\CommonBundle\Exception\UnsupportedTypeException;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -27,6 +28,8 @@ class ViewListener
      * It then renders the template and sets it as the Response
      *
      * @param GetResponseForControllerResultEvent $event
+     *
+     * @throws \LogicException
      */
     public function onControllerResponse(GetResponseForControllerResultEvent $event)
     {
@@ -49,7 +52,7 @@ class ViewListener
                     $response = $this->templating->renderResponse($template, $event->getControllerResult());
                 break;
             default:
-                throw new \LogicException(sprintf('Response type "%s" not supported', $responseType));
+                throw new UnsupportedTypeException(sprintf('Response type "%s" not supported', $responseType));
         }
 
 
