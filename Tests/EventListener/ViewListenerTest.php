@@ -2,84 +2,99 @@
 
 namespace Brammm\CommonBundle\Tests\EventListener;
 
+
 use Brammm\CommonBundle\EventListener\ViewListener;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ViewListenerTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent */
-    private $eventMock;
-    /** @var \PHPUnit_Framework_MockObject_MockObject|\Symfony\Bundle\TwigBundle\TwigEngine */
-    private $twigMock;
+
+    /** @var ViewListener */
+    private $SUT;
 
     public function setUp()
     {
-        $this->twigMock = $this->getMockBuilder('\Symfony\Bundle\TwigBundle\TwigEngine')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->eventMock = $this->getMockBuilder(
-            '\Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent'
-        )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->SUT = new ViewListener('template', [
+            'bar' => 'json',
+            'baz' => 'barf',
+        ]);
     }
 
-    public function testonControllerResponse()
+    /**
+     * @expectedException \Brammm\CommonBundle\Exception\UnsupportedTypeException
+     */
+    public function testThrowsExceptionIfUnknownType()
     {
-        $request = $this->getRequestMock('acme_demo.controller.foo:barAction');
+        $event = $this->getEventWithRequestWithController('baz');
 
-        $this->eventMock->expects($this->once())
-            ->method('getRequest')
-            ->will($this->returnValue($request));
+        $this->SUT->onControllerResponse($event);
+    }
 
-        $this->eventMock->expects($this->once())
-            ->method('getControllerResult')
-            ->will($this->returnValue(['foo' => 'bar'])); // the foo from the templating mock
+    /**
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function testCanOnlyAddRendererInterfaces()
+    {
+        $renderers = [
+            'bar' => $this->getMock('\Brammm\CommonBundle\Renderer\RendererInterface'),
+            'baz' => new \StdClass(),
+        ];
 
-        $this->twigMock->expects($this->once())
-            ->method('renderResponse')
-            ->with($this->equalTo(':Demo:Foo/bar.html.twig'), $this->equalTo(['foo' => 'bar']))
+        $this->SUT->setRenderers($renderers);
+    }
+
+    public function testRendersResponse()
+    {
+        $renderer = $this->getMock('\Brammm\CommonBundle\Renderer\RendererInterface');
+        $renderer
+            ->expects($this->once())
+            ->method('render')
+            ->with(
+                $this->equalTo('bar'),
+                $this->equalTo(['foo'=>'bar'])
+            )
             ->will($this->returnValue(new Response()));
 
-        $listener = new ViewListener($this->twigMock);
-        $listener->onControllerResponse($this->eventMock);
+        $renderers = [
+            'json' => $renderer,
+        ];
+
+        $this->SUT->setRenderers($renderers);
+
+        $event = $this->getEventWithRequestWithController('bar');
+        $event
+            ->expects($this->once())
+            ->method('getControllerResult')
+            ->will($this->returnValue(['foo'=>'bar']));
+        $event
+            ->expects($this->once())
+            ->method('setResponse');
+
+        $this->SUT->onControllerResponse($event);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIncorrectController()
+    private function getEventWithRequestWithController($controller)
     {
-        $request = $this->getRequestMock('AcmeDemoBundle:Foo:bar');
-
-        $this->eventMock->expects($this->once())
-            ->method('getRequest')
-            ->will($this->returnValue($request));
-
-        $listener = new ViewListener($this->twigMock);
-        $listener->onControllerResponse($this->eventMock);
-    }
-
-    /**
-     * @param string $forController
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Request
-     */
-    private function getRequestMock($forController)
-    {
-        $paramBag = $this->getMockBuilder('\Symfony\Component\HttpFoundation\ParameterBag')
-                ->getMock();
-        $paramBag->expects($this->once())
-            ->method('get')
-            ->will($this->returnValue($forController));
-
         $request = $this->getMockBuilder('\Symfony\Component\HttpFoundation\Request')
             ->enableArgumentCloning()
             ->getMock();
+
+        $paramBag = $this->getMock('\Symfony\Component\HttpFoundation\ParameterBag');
+        $paramBag->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('_controller'))
+            ->will($this->returnValue($controller));
+
         $request->attributes = $paramBag;
 
-        return $request;
+        $event = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event
+            ->expects($this->once())
+            ->method('getRequest')
+            ->will($this->returnValue($request));
+
+        return $event;
     }
 }
