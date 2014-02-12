@@ -7,31 +7,21 @@
         <service id="em" alias="doctrine.orm.entity_manager" />
         <service id="security" alias="security.context" />
 
-        <service id="brammm_common.app.templateguesser" class="Brammm\CommonBundle\Template\AppTemplateGuesser" />
+        <service id="brammm_common.templateguesser.app" class="Brammm\CommonBundle\Template\AppTemplateGuesser" />
 
-        <service id="brammm_common.controller.base" abstract="true">
-            <call method="setEntityManager">
-                <argument type="service" id="em" />
-            </call>
-            <call method="setSecurity">
-                <argument type="service" id="security" />
-            </call>
-            <call method="setSession">
-                <argument type="service" id="session" />
-            </call>
-            <call method="setFormFactory">
-                <argument type="service" id="form.factory" />
-            </call>
-            <call method="setEventDispatcher">
-                <argument type="service" id="event_dispatcher" />
-            </call>
+        <service id="brammm_common.renderer.json" class="Brammm\CommonBundle\Renderer\JsonRenderer">
+            <tag name="response_renderer" type="json" />
+        </service>
+
+        <service id="brammm_common.renderer.template" class="Brammm\CommonBundle\Renderer\TemplateRenderer">
+            <argument type="service" id="brammm_common.templateguesser" />
+            <argument type="service" id="templating" />
+            <tag name="response_renderer" type="template" />
         </service>
 
         <service id="brammm_common.view_listener" class="Brammm\CommonBundle\EventListener\ViewListener">
             <argument>%brammm_common.response.default%</argument>
             <argument>%brammm_common.response.types%</argument>
-            <argument type="service" id="brammm_common.templateguesser" />
-            <argument type="service" id="templating" />
             <tag name="kernel.event_listener" event="kernel.view" method="onControllerResponse" />
         </service>
 

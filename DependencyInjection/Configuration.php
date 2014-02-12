@@ -20,7 +20,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('response')
                     ->children()
                         ->scalarNode('guesser')
-                            ->defaultValue('brammm_common.app.templateguesser')
+                            ->defaultValue('brammm_common.templateguesser.app')
                         ->end()
                         ->scalarNode('default')
                             ->defaultValue('template')

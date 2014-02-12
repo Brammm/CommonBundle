@@ -3,9 +3,7 @@
 namespace Brammm\CommonBundle\EventListener;
 
 use Brammm\CommonBundle\Exception\UnsupportedTypeException;
-use Brammm\CommonBundle\Template\TemplateGuesserInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Brammm\CommonBundle\Renderer\RendererInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 class ViewListener
@@ -14,17 +12,13 @@ class ViewListener
     private $defaultType;
     /** @var array */
     private $types;
-    /** @var TemplateGuesserInterface */
-    private $guesser;
-    /** @var EngineInterface */
-    private $templating;
+    /** @var RendererInterface[] */
+    private $renderers;
 
-    public function __construct($defaultType, array $types, TemplateGuesserInterface $guesser, EngineInterface $templating)
+    public function __construct($defaultType, array $types)
     {
         $this->defaultType = $defaultType;
         $this->types       = $types;
-        $this->guesser     = $guesser;
-        $this->templating  = $templating;
     }
 
     /**
@@ -34,33 +28,55 @@ class ViewListener
      *
      * @param GetResponseForControllerResultEvent $event
      *
-     * @throws \LogicException
+     * @throws UnsupportedTypeException
      */
     public function onControllerResponse(GetResponseForControllerResultEvent $event)
     {
         $controller = $event->getRequest()->attributes->get('_controller');
 
-        $responseType = $this->defaultType;
-        foreach ($this->types as $key => $type) {
+        $type = $this->defaultType;
+        // see if we configured a type for a regex that matches the $controller
+        foreach ($this->types as $key => $keyType) {
             if (preg_match(sprintf('/%s/', $key), $controller)) {
-                $responseType = $type;
+                $type = $keyType;
                 break;
             }
         }
 
-        switch ($responseType) {
-            case 'json':
-                $response = new JsonResponse($event->getControllerResult());
-                break;
-            case 'template':
-                $template = $this->guesser->guess($controller);
-                $response = $this->templating->renderResponse($template, $event->getControllerResult());
-                break;
-            default:
-                throw new UnsupportedTypeException(sprintf('Response type "%s" not supported', $responseType));
+        if (!isset($this->renderers[$type])) {
+            throw new UnsupportedTypeException(sprintf('Response type "%s" not supported', $type));
         }
 
-
-        $event->setResponse($response);
+        $event->setResponse(
+            $this->renderers[$type]->render(
+                $controller,
+                $event->getControllerResult()
+            )
+        );
     }
+
+    /**
+     * @param RendererInterface[] $renderers
+     */
+    public function setRenderers(array $renderers)
+    {
+        foreach ($renderers as $type => $renderer) {
+            $this->addRenderer($type, $renderer);
+        }
+
+    }
+
+    /**
+     * @param string            $type
+     * @param RendererInterface $renderer
+     *
+     * @return $this
+     */
+    public function addRenderer($type, RendererInterface $renderer)
+    {
+        $this->renderers[$type] = $renderer;
+        return $this;
+    }
+
+
 }

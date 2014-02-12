@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Loader;
 
 class BrammmCommonExtension extends Extension
 {
+
     /**
      * {@inheritDoc}
      */
@@ -23,6 +24,7 @@ class BrammmCommonExtension extends Extension
         $container->setParameter('brammm_common.response.types', $config['response']['types']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('controller.xml');
         $loader->load('services.xml');
     }
 }
