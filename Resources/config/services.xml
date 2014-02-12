@@ -4,13 +4,16 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="em" alias="doctrine.orm.entity_manager" />
+        <service id="security" alias="security.context" />
+
 
         <service id="brammm_common.controller.base" abstract="true">
             <call method="setEntityManager">
-                <argument type="service" id="doctrine.orm.entity_manager" />
+                <argument type="service" id="em" />
             </call>
             <call method="setSecurity">
-                <argument type="service" id="security.context" />
+                <argument type="service" id="security" />
             </call>
             <call method="setSession">
                 <argument type="service" id="session" />
