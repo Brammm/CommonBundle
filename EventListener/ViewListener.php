@@ -5,14 +5,19 @@ namespace Brammm\CommonBundle\EventListener;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
-class ViewListener {
+class ViewListener
+{
 
+    /** @var string */
+    private $defaultResponse;
     /** @var EngineInterface */
-    protected $templating;
+    private $templating;
 
-    public function __construct(EngineInterface $templating)
+    public function __construct($defaultResponse, array $responses, EngineInterface $templating)
     {
-        $this->templating = $templating;
+        $this->defaultResponse = $defaultResponse;
+        $this->responses       = $responses;
+        $this->templating      = $templating;
     }
 
     /**
@@ -47,15 +52,18 @@ class ViewListener {
         //     2 => 'foo',
         //     3 => 'bar'
         // ]
-        if(preg_match('/^(.+)\.controller\.(.+):(.+)Action$/', $controllerPath, $matches)) {
+        if (preg_match('/^(.+)\.controller\.(.+):(.+)Action$/', $controllerPath, $matches)) {
             return ':'
-                . ucfirst(preg_replace('/^[a-z]+_/', '', $matches[1])) // Strip out the vendor
-                . ':'
-                . ucfirst($matches[2])
-                . '/' . $matches[3]
-                . '.html.twig';
+            . ucfirst(preg_replace('/^[a-z]+_/', '', $matches[1])) // Strip out the vendor
+            . ':'
+            . ucfirst($matches[2])
+            . '/' . $matches[3]
+            . '.html.twig';
         } else {
-            throw new \InvalidArgumentException(sprintf('The controller "%s" does not match the pattern "acme_demo.controller.foo:barAction"', $controllerPath));
+            throw new \InvalidArgumentException(sprintf(
+                'The controller "%s" does not match the pattern "acme_demo.controller.foo:barAction"',
+                $controllerPath
+            ));
         }
 
     }

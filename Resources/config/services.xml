@@ -27,6 +27,8 @@
         </service>
 
         <service id="brammm_common.view_listener" class="Brammm\CommonBundle\EventListener\ViewListener">
+            <argument>%brammm_common.response.default%</argument>
+            <argument>%brammm_common.response.responses%</argument>
             <argument type="service" id="templating" />
             <tag name="kernel.event_listener" event="kernel.view" method="onControllerResponse" />
         </service>
