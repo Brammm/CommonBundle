@@ -25,11 +25,11 @@ class AppTemplateGuesser implements TemplateGuesserInterface
             . ucfirst($matches[2])
             . '/' . $matches[3]
             . '.html.twig';
-        } else {
-            throw new UnguessableControllerException(sprintf(
-                'The controller "%s" does not match the pattern "acme_demo.controller.foo:barAction"',
-                $controller
-            ));
         }
+
+        throw new UnguessableControllerException(sprintf(
+            'The controller "%s" does not match the pattern "acme_demo.controller.foo:barAction"',
+            $controller
+        ));
     }
 }
