@@ -2,7 +2,7 @@
     "name": "brammm/common-bundle",
     "type": "symfony-bundle",
     "description": "A Symfony2 bundle with some common functionality",
-    "keywords": ["common", "bundle"],
+    "keywords": ["common", "bundle", "symfony2"],
     "homepage":    "https://github.com/Brammm/CommonBundle",
     "license":     "MIT",
     "authors": [
