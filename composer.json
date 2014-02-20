@@ -1,0 +1,23 @@
+{
+    "name": "brammm/common-bundle",
+    "type": "symfony-bundle",
+    "description": "A Symfony2 bundle with some common functionality",
+    "keywords": ["common", "bundle"],
+    "homepage":    "https://github.com/Brammm/CommonBundle",
+    "license":     "MIT",
+    "authors": [
+        {
+            "name": "Bram Van der Sype",
+            "homepage": "https://github.com/Brammm"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "~2.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "Brammm\\CommonBundle": ""
+        }
+    },
+    "target-dir": "Brammm/CommonBundle"
+}
