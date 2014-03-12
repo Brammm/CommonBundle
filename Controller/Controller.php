@@ -7,6 +7,7 @@ use Brammm\CommonBundle\Event\FormCreatedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class Controller
@@ -60,11 +61,11 @@ abstract class Controller
     }
 
     /**
-     * @param Request $request
+     * @param RequestStack $requestStack
      */
-    public function setRequestStack(Request $request)
+    public function setRequest(RequestStack $requestStack)
     {
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     /**

@@ -14,7 +14,7 @@
                 <argument type="service" id="form.factory" />
             </call>
             <call method="setRequest">
-                <argument type="service" id="request" />
+                <argument type="service" id="request_stack" />
             </call>
             <call method="setSession">
                 <argument type="service" id="session" />
