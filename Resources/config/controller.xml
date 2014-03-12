@@ -7,20 +7,14 @@
     <services>
 
         <service id="brammm_common.controller.base" abstract="true">
-            <call method="setEntityManager">
-                <argument type="service" id="em" />
-            </call>
-            <call method="setSecurity">
-                <argument type="service" id="security" />
-            </call>
-            <call method="setSession">
-                <argument type="service" id="session" />
+            <call method="setEventDispatcher">
+                <argument type="service" id="event_dispatcher" />
             </call>
             <call method="setFormFactory">
                 <argument type="service" id="form.factory" />
             </call>
-            <call method="setEventDispatcher">
-                <argument type="service" id="event_dispatcher" />
+            <call method="setRequestStack">
+                <argument type="service" id="request_stack" />
             </call>
         </service>
     </services>

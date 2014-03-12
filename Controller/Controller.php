@@ -4,21 +4,14 @@ namespace Brammm\CommonBundle\Controller;
 
 use Brammm\CommonBundle\Event\ControllerEvent;
 use Brammm\CommonBundle\Event\FormCreatedEvent;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class Controller
 {
-    /** @var ObjectManager */
-    protected $em;
-    /** @var SecurityContextInterface */
-    protected $security;
-    /** @var SessionInterface */
-    protected $session;
+    /** @var RequestStack */
+    protected $requestStack;
     /** @var FormFactory */
     protected $formFactory;
     /** @var EventDispatcherInterface */
@@ -29,20 +22,15 @@ abstract class Controller
      *
      * @param         $type
      * @param null    $data
-     * @param Request $request
      * @param array   $options
      *
      * @return \Symfony\Component\Form\Form|\Symfony\Component\Form\FormInterface
      */
-    public function createForm($type, $data = null, Request $request = null, array $options = array())
+    public function createForm($type, $data = null, array $options = array())
     {
         $form = $this->formFactory->create($type, $data, $options);
 
-        if (null === $request) {
-            $form->handleRequest($request);
-        }
-
-        $event = new FormCreatedEvent($form, $request);
+        $event = new FormCreatedEvent($form, $this->requestStack);
         $this->eventDispatcher->dispatch(ControllerEvent::FORM_CREATED, $event);
 
         return $form;
@@ -53,27 +41,11 @@ abstract class Controller
     ########################
 
     /**
-     * @param ObjectManager $em
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function setEntityManager(ObjectManager $em)
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
-        $this->em = $em;
-    }
-
-    /**
-     * @param SecurityContextInterface $security
-     */
-    public function setSecurity(SecurityContextInterface $security)
-    {
-        $this->security = $security;
-    }
-
-    /**
-     * @param SessionInterface $session
-     */
-    public function setSession(SessionInterface $session)
-    {
-        $this->session = $session;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -85,10 +57,10 @@ abstract class Controller
     }
 
     /**
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param RequestStack $requestStack
      */
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    public function setRequestStack(RequestStack $requestStack)
     {
-        $this->eventDispatcher = $eventDispatcher;
+        $this->requestStack = $requestStack;
     }
 } 

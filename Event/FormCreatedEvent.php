@@ -4,19 +4,19 @@ namespace Brammm\CommonBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FormCreatedEvent extends Event
 {
     /** @var FormInterface */
     protected $form;
-    /** @var Request */
-    protected $request;
+    /** @var RequestStack */
+    protected $requestStack;
 
-    public function __construct(FormInterface $form, Request $request)
+    public function __construct(FormInterface $form, RequestStack $requestStack)
     {
-        $this->form    = $form;
-        $this->request = $request;
+        $this->form         = $form;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -28,11 +28,11 @@ class FormCreatedEvent extends Event
     }
 
     /**
-     * @return Request
+     * @return RequestStack
      */
-    public function getRequest()
+    public function getRequestStack()
     {
-        return $this->request;
+        return $this->requestStack;
     }
 
 }
