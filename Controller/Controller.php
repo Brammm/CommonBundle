@@ -7,15 +7,18 @@ use Brammm\CommonBundle\Event\FormCreatedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class Controller
 {
-    /** @var Request*/
-    protected $request;
-    /** @var FormFactory */
-    protected $formFactory;
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
+    /** @var FormFactory */
+    protected $formFactory;
+    /** @var Request*/
+    protected $request;
+    /** @var SessionInterface */
+    protected $session;
 
     /**
      * Creates a form
@@ -62,5 +65,13 @@ abstract class Controller
     public function setRequestStack(Request $request)
     {
         $this->request = $request;
+    }
+
+    /**
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session)
+    {
+        $this->session = $session;
     }
 } 

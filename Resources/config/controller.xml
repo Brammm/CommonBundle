@@ -16,6 +16,9 @@
             <call method="setRequest">
                 <argument type="service" id="request" />
             </call>
+            <call method="setSession">
+                <argument type="service" id="session" />
+            </call>
         </service>
     </services>
 
