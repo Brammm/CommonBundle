@@ -6,12 +6,12 @@ use Brammm\CommonBundle\Event\ControllerEvent;
 use Brammm\CommonBundle\Event\FormCreatedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class Controller
 {
-    /** @var RequestStack */
-    protected $requestStack;
+    /** @var Request*/
+    protected $request;
     /** @var FormFactory */
     protected $formFactory;
     /** @var EventDispatcherInterface */
@@ -30,7 +30,7 @@ abstract class Controller
     {
         $form = $this->formFactory->create($type, $data, $options);
 
-        $event = new FormCreatedEvent($form, $this->requestStack->getCurrentRequest());
+        $event = new FormCreatedEvent($form, $this->request);
         $this->eventDispatcher->dispatch(ControllerEvent::FORM_CREATED, $event);
 
         return $form;
@@ -57,10 +57,10 @@ abstract class Controller
     }
 
     /**
-     * @param RequestStack $requestStack
+     * @param Request $request
      */
-    public function setRequestStack(RequestStack $requestStack)
+    public function setRequestStack(Request $request)
     {
-        $this->requestStack = $requestStack;
+        $this->request = $request;
     }
 } 
