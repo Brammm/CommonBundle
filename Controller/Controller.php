@@ -30,7 +30,7 @@ abstract class Controller
     {
         $form = $this->formFactory->create($type, $data, $options);
 
-        $event = new FormCreatedEvent($form, $this->requestStack);
+        $event = new FormCreatedEvent($form, $this->requestStack->getCurrentRequest());
         $this->eventDispatcher->dispatch(ControllerEvent::FORM_CREATED, $event);
 
         return $form;
