@@ -7,4 +7,5 @@ php:
 script: phpunit -c .
 
 before_script:
+  - composer selfupdate
   - composer install
