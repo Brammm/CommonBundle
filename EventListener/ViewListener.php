@@ -50,7 +50,7 @@ class ViewListener
         $event->setResponse(
             $this->renderers[$type]->render(
                 $controller,
-                $event->getControllerResult()
+                $event->getControllerResult() ?: []
             )
         );
     }
