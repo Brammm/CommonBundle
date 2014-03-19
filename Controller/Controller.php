@@ -6,6 +6,7 @@ use Brammm\CommonBundle\Event\ControllerEvent;
 use Brammm\CommonBundle\Event\FormCreatedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -38,6 +39,25 @@ abstract class Controller
         $this->eventDispatcher->dispatch(ControllerEvent::FORM_CREATED, $event);
 
         return $form;
+    }
+
+    /**
+     * Will tell you if it's okay to process a form or not
+     * Handles the request for you as well
+     *
+     * @param FormInterface $form
+     *
+     * @return bool
+     */
+    public function processForm(FormInterface $form)
+    {
+        if (!$this->request->isMethod('POST')) {
+            return false;
+        }
+
+        $form->handleRequest($this->request);
+
+        return $form->isValid();
     }
 
     ########################
