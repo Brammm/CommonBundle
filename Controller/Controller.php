@@ -10,6 +10,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 abstract class Controller
 {
@@ -19,7 +21,9 @@ abstract class Controller
     protected $formFactory;
     /** @var Request*/
     protected $request;
-    /** @var SessionInterface */
+    /** @var RouterInterface */
+    protected $router;
+    /** @var \Symfony\Component\HttpFoundation\Session\Session */
     protected $session;
 
     /**
@@ -60,6 +64,18 @@ abstract class Controller
         return $form->isValid();
     }
 
+    /**
+     * @param string $route
+     * @param array  $parameters
+     * @param bool   $referenceType
+     *
+     * @return string
+     */
+    public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        return $this->router->generate($route, $parameters, $referenceType);
+    }
+
     ########################
     ## Dependency Setters ##
     ########################
@@ -86,6 +102,14 @@ abstract class Controller
     public function setRequest(RequestStack $requestStack)
     {
         $this->request = $requestStack->getCurrentRequest();
+    }
+
+    /**
+     * @param RouterInterface $router
+     */
+    public function setRouter(RouterInterface $router)
+    {
+        $this->router = $router;
     }
 
     /**
