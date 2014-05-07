@@ -8,9 +8,6 @@
     </parameters>
 
     <services>
-        <service id="em" alias="doctrine.orm.entity_manager" />
-        <service id="security" alias="security.context" />
-
         <service id="brammm_common.templateguesser.app" class="Brammm\CommonBundle\Template\AppTemplateGuesser" />
 
         <service id="brammm_common.renderer.json" class="Brammm\CommonBundle\Renderer\JsonRenderer">
@@ -30,6 +27,12 @@
         </service>
 
         <service id="brammm_common.canonicalizer" class="%brammm_common.canonicalizer.class%" />
+
+        <service id="brammm_common.manager" class="Brammm\CommonBundle\Manager\Manager" abstract="true">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager" />
+            </call>
+        </service>
 
     </services>
 </container>
