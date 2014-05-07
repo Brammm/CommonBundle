@@ -3,6 +3,10 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="brammm_common.canonicalizer.class">Brammm\CommonBundle\Util\Canonicalizer</parameter>
+    </parameters>
+
     <services>
         <service id="em" alias="doctrine.orm.entity_manager" />
         <service id="security" alias="security.context" />
@@ -24,6 +28,8 @@
             <argument>%brammm_common.response.types%</argument>
             <tag name="kernel.event_listener" event="kernel.view" method="onControllerResponse" />
         </service>
+
+        <service id="brammm_common.canonicalizer" class="%brammm_common.canonicalizer.class%" />
 
     </services>
 </container>
