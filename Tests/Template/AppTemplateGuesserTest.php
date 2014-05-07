@@ -21,4 +21,12 @@ class AppTemplateGuesserTest extends \PHPUnit_Framework_TestCase
             $this->SUT->guess('acme_demo.controller.foo:barAction')
         );
     }
+
+    /**
+     * @expectedException Brammm\CommonBundle\Exception\UnguessableControllerException
+     */
+    public function testException()
+    {
+        $this->SUT->guess('foo');
+    }
 } 
