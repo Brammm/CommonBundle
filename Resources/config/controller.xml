@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="brammm_common.controller.base" abstract="true">
+        <service id="brammm_common.controller.base" class="Brammm\CommonBundle\Controller\Controller" abstract="true">
             <call method="setEventDispatcher">
                 <argument type="service" id="event_dispatcher" />
             </call>
