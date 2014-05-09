@@ -46,15 +46,14 @@ Define your controllers as services. They can extend the base controller for som
 </service>
 ```
 
-**Note:** The base controller does not know about the `Container`. No magic `$this->get()`. Inject the services you really need. `@event_dispatcher`, `@form.factory`, `@router` and `@session` are available by default under `$this->eventDispatcher`, `$this->formFactory`, `$this->router` and `$this->session` respectively. `$this->request` contains the current request.
+**Note:** The base controller does not know about the `Container`. No magic `$this->get()`. Inject the services you really need. `@event_dispatcher` and `@form.factory` are available by default via their getters. [Inject `Request` in your controllers](http://symfony.com/doc/current/book/controller.html#the-request-as-a-controller-argument). Note that you can get the session from the request.
 
 #### Controller helper methods
 
 The base controller provides some basic helper methods.
 
-- `generateUrl($route, $parameters, $referenceType)` generates routes with the router.
-- `createForm($type, $data, $options)` generates a form you can render in views etc.
-- `processForm($form)` returns a boolean telling you if the form is ready to be saved. It automatically handles the request for you as well.
+- `createForm($request, $type, $data, $options)` generates a form you can render in views etc. It also fires a `controller.form_created` event which you can use to handle certain things.  
+- `processForm($form, $request)` returns a boolean telling you if the form is ready to be saved. It automatically handles the request for you as well.
 
 ### Repositories and managers
 

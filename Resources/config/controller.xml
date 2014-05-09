@@ -13,15 +13,6 @@
             <call method="setFormFactory">
                 <argument type="service" id="form.factory" />
             </call>
-            <call method="setRequest">
-                <argument type="service" id="request_stack" />
-            </call>
-            <call method="setRouter">
-                <argument type="service" id="router" />
-            </call>
-            <call method="setSession">
-                <argument type="service" id="session" />
-            </call>
         </service>
     </services>
 

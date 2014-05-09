@@ -8,38 +8,29 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class Controller
 {
     /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
+    private $eventDispatcher;
     /** @var FormFactory */
-    protected $formFactory;
-    /** @var Request*/
-    protected $request;
-    /** @var RouterInterface */
-    protected $router;
-    /** @var \Symfony\Component\HttpFoundation\Session\Session */
-    protected $session;
+    private $formFactory;
 
     /**
      * Creates a form
      *
+     * @param Request $request
      * @param         $type
      * @param null    $data
      * @param array   $options
      *
      * @return \Symfony\Component\Form\Form|\Symfony\Component\Form\FormInterface
      */
-    public function createForm($type, $data = null, array $options = array())
+    public function createForm(Request $request, $type, $data = null, array $options = array())
     {
         $form = $this->formFactory->create($type, $data, $options);
 
-        $event = new FormCreatedEvent($form, $this->request);
+        $event = new FormCreatedEvent($form, $request);
         $this->eventDispatcher->dispatch(ControllerEvent::FORM_CREATED, $event);
 
         return $form;
@@ -50,30 +41,19 @@ abstract class Controller
      * Handles the request for you as well
      *
      * @param FormInterface $form
+     * @param Request       $request
      *
      * @return bool
      */
-    public function processForm(FormInterface $form)
+    public function processForm(FormInterface $form, Request $request)
     {
-        if (!$this->request->isMethod('POST')) {
+        if (!$request->isMethod('POST')) {
             return false;
         }
 
-        $form->handleRequest($this->request);
+        $form->handleRequest($request);
 
         return $form->isValid();
-    }
-
-    /**
-     * @param string $route
-     * @param array  $parameters
-     * @param bool   $referenceType
-     *
-     * @return string
-     */
-    public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
-    {
-        return $this->router->generate($route, $parameters, $referenceType);
     }
 
     ########################
@@ -89,6 +69,14 @@ abstract class Controller
     }
 
     /**
+     * @return EventDispatcherInterface
+     */
+    final public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
+
+    /**
      * @param FormFactory $formFactory
      */
     public function setFormFactory(FormFactory $formFactory)
@@ -97,26 +85,12 @@ abstract class Controller
     }
 
     /**
-     * @param RequestStack $requestStack
+     * @return FormFactory
      */
-    public function setRequest(RequestStack $requestStack)
+    final public function getFormFactory()
     {
-        $this->request = $requestStack->getCurrentRequest();
+        return $this->formFactory;
     }
 
-    /**
-     * @param RouterInterface $router
-     */
-    public function setRouter(RouterInterface $router)
-    {
-        $this->router = $router;
-    }
 
-    /**
-     * @param SessionInterface $session
-     */
-    public function setSession(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
 } 
