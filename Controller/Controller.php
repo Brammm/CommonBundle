@@ -28,10 +28,10 @@ abstract class Controller
      */
     public function createForm(Request $request, $type, $data = null, array $options = array())
     {
-        $form = $this->formFactory->create($type, $data, $options);
+        $form = $this->getFormFactory()->create($type, $data, $options);
 
         $event = new FormCreatedEvent($form, $request);
-        $this->eventDispatcher->dispatch(ControllerEvent::FORM_CREATED, $event);
+        $this->getEventDispatcher()->dispatch(ControllerEvent::FORM_CREATED, $event);
 
         return $form;
     }
@@ -71,7 +71,7 @@ abstract class Controller
     /**
      * @return EventDispatcherInterface
      */
-    final public function getEventDispatcher()
+    final protected function getEventDispatcher()
     {
         return $this->eventDispatcher;
     }
@@ -87,7 +87,7 @@ abstract class Controller
     /**
      * @return FormFactory
      */
-    final public function getFormFactory()
+    final protected function getFormFactory()
     {
         return $this->formFactory;
     }

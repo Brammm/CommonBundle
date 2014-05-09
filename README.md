@@ -52,7 +52,7 @@ Define your controllers as services. They can extend the base controller for som
 
 The base controller provides some basic helper methods.
 
-- `createForm($request, $type, $data, $options)` generates a form you can render in views etc. It also fires a `controller.form_created` event which you can use to handle certain things.  
+- `createForm($request, $type, $data, $options)` generates a form you can render in views etc. It also fires a `controller.form_created` event which you can use to handle certain things.
 - `processForm($form, $request)` returns a boolean telling you if the form is ready to be saved. It automatically handles the request for you as well.
 
 ### Repositories and managers
