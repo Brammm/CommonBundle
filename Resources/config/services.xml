@@ -8,6 +8,12 @@
     </parameters>
 
     <services>
+
+        <service id="brammm_common.paramconverter.formhandler" class="Brammm\CommonBundle\Request\ParamConverter\FormHandlerConverter">
+            <argument type="service" id="form.factory" />
+            <tag name="request.param_converter" priority="-2" converter="form_handler_converter" />
+        </service>
+
         <service id="brammm_common.templateguesser.app" class="Brammm\CommonBundle\Template\AppTemplateGuesser" />
 
         <service id="brammm_common.renderer.json" class="Brammm\CommonBundle\Renderer\JsonRenderer">
