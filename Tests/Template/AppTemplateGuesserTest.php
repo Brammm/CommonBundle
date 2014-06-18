@@ -22,8 +22,16 @@ class AppTemplateGuesserTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSubnamespace()
+    {
+        $this->assertEquals(
+            ':Demo:Baz/Foo/bar.html.twig',
+            $this->SUT->guess('acme_demo.controller.baz.foo:barAction')
+        );
+    }
+
     /**
-     * @expectedException Brammm\CommonBundle\Exception\UnguessableControllerException
+     * @expectedException \Brammm\CommonBundle\Exception\UnguessableControllerException
      */
     public function testException()
     {
